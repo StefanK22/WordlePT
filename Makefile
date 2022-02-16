@@ -1,4 +1,4 @@
-all: compile
+all: play
 
 compile: wordle.o
 	g++ wordle.o -o wordle
@@ -9,5 +9,5 @@ wordle.o:
 clean:
 	rm -rf *o wordle
 
-run:
+play: clean compile
 	./wordle

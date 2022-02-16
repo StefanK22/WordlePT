@@ -1,40 +1,101 @@
-#include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdlib> 
+#include <ctime>
+#include <unistd.h>
+
 #define SIZE (5)
+#define COLOR_GREEN   "\x1b[32m"
+#define COLOR_YELLOW  "\x1b[33m"
+#define COLOR_RESET   "\x1b[0m"
 
 using namespace std;
 
-int verify_letter(int position, char c, const char* word){
-	int i, found = 0;
+ifstream in;
+int file_size = 0;
+
+int verify_letter(int position, char c, string word){
+	int i, found = -1;
+	if (word[position] == c)
+		return 1;
+
 	for (i = 0; i < SIZE; i++){
-		if (word[c] == c){
-			found = 1;
+		if (word[i] == c){
+			found = 0;
 			break;
 		}
 	}
-	if (found != 0){
-		if (i == position)
-			return 2;
-	}
-	return -1;
+	return found;
 	
+}
+
+bool check_attempt(string attempt){
+	string word;
+	in.open("words.txt");
+	for (int i = 0; i < file_size; i++){
+		getline(in, word);
+		if (attempt.compare(word) == 0){
+			in.close();
+			return true;
+		}
+	}
+	in.close();
+	cout << "Palavra não existente\n";
+	return false;
 }
 
 int main(){
 
-	const char* right_word = "ANDAR";
-	char attempt[SIZE + 1];
+	string right_word;
+	int correct_letters, attempts_num = 0, count = 0;
+	in.open("words.txt");
 
-	cout << "Digite a palavra: ";
-	cin >> attempt;
-	printf("A sua palavra é %s e a certa é %s\n", attempt, right_word);
-	for (int i = 0; i < SIZE; i++){
-		if (right_word[i] == attempt[i])
-			printf("1 ");
-		else
-			printf("0 ");
+	while(in.peek()!=EOF){
+		getline(in, right_word);
+		count++;
 	}
-	printf("\n");
+	in.close();
+	file_size = count;
+	in.open("words.txt");
+
+	srand((unsigned)time(0));
+	for(int i = 0; i < rand() % file_size + 1; i++){
+		getline(in, right_word);
+	}
+	in.close();
+	if (right_word.length() != 5)
+		exit(EXIT_FAILURE);
+
+	//cout << "A palavra é " << right_word << "\n";
+	do {
+		string attempt;
+		cin >> attempt;
+		if (!check_attempt(attempt))
+			continue;
+		correct_letters = 0;
+		for (int i = 0; i < SIZE; i++){
+			int n = verify_letter(i, attempt[i], right_word);
+			if (n == -1)
+				//cout << attempt[i] << " ";
+				printf("%c ", attempt[i]);		
+			else if (n == 0)
+				printf(COLOR_YELLOW "%c " COLOR_RESET, attempt[i]);
+			else if (n == 1){
+				correct_letters++;
+				printf(COLOR_GREEN "%c " COLOR_RESET, attempt[i]);
+			}
+		}
+		cout << "\n";
+		attempts_num++;
+
+	} while (correct_letters != 5 && attempts_num < 5);
+	if (attempts_num == 5 && correct_letters != 5)
+		cout << "Perdeu. Palavra certa: " << right_word << "\n";
+	
 
 	return 0;
 }
+/* tocas, notas, bolir, calar */
