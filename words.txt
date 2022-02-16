@@ -723,3 +723,6 @@ calar
 colar
 limao
 telas
+linho
+combo
+comia
