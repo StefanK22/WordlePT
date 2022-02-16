@@ -716,3 +716,10 @@ ardua
 calvo
 calor
 ceifa
+tocas
+notas
+bolir
+calar
+colar
+limao
+telas

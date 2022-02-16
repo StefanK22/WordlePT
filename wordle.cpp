@@ -8,8 +8,10 @@
 #include <unistd.h>
 
 #define SIZE (5)
+#define COLOR_RED     "\x1b[31m"
 #define COLOR_GREEN   "\x1b[32m"
 #define COLOR_YELLOW  "\x1b[33m"
+#define COLOR_BLUE    "\x1b[34m"
 #define COLOR_RESET   "\x1b[0m"
 
 using namespace std;
@@ -29,10 +31,39 @@ int verify_letter(int position, char c, string word){
 		}
 	}
 	return found;
-	
 }
 
-bool check_attempt(string attempt){
+void print_all_words(){
+	string line;
+	in.open("words.txt");
+	while(in.peek()!=EOF){
+		getline(in, line);
+		cout << line << " ";
+	}
+	cout << "\n";
+	in.close();
+}
+
+void welcome_message(){
+	printf(COLOR_RED "\n\n                Bem-vindo\n" COLOR_RESET);
+	printf(COLOR_YELLOW "            W O R D L E - P T\n\n" COLOR_RESET);
+	printf(COLOR_GREEN "Escreva:\n" COLOR_RESET);
+	printf(COLOR_BLUE "    help" COLOR_RESET);
+	cout << " - Para ver a lista de palavras.\n";
+	printf(COLOR_BLUE "    quit" COLOR_RESET);
+	cout << " - Para sair do jogo.\n";
+	printf(COLOR_GREEN "    Uma palavra de 5 letras" COLOR_RESET);
+	cout << " - para tentar adivinhar a resposta.\n";
+}
+
+int check_attempt(string attempt){
+
+	if (attempt.compare("quit") == 0)
+		exit(EXIT_SUCCESS);
+	else if (attempt.compare("help") == 0){
+		print_all_words();
+		return false;
+	}
 	string word;
 	in.open("words.txt");
 	for (int i = 0; i < file_size; i++){
@@ -50,7 +81,7 @@ bool check_attempt(string attempt){
 int main(){
 
 	string right_word;
-	int correct_letters, attempts_num = 0, count = 0;
+	int correct_letters, attempts_num = 0, count = 0, n;
 	in.open("words.txt");
 
 	while(in.peek()!=EOF){
@@ -69,7 +100,7 @@ int main(){
 	if (right_word.length() != 5)
 		exit(EXIT_FAILURE);
 
-	//cout << "A palavra é " << right_word << "\n";
+	welcome_message();
 	do {
 		string attempt;
 		cin >> attempt;
@@ -77,9 +108,8 @@ int main(){
 			continue;
 		correct_letters = 0;
 		for (int i = 0; i < SIZE; i++){
-			int n = verify_letter(i, attempt[i], right_word);
+			n = verify_letter(i, attempt[i], right_word);
 			if (n == -1)
-				//cout << attempt[i] << " ";
 				printf("%c ", attempt[i]);		
 			else if (n == 0)
 				printf(COLOR_YELLOW "%c " COLOR_RESET, attempt[i]);
@@ -94,8 +124,10 @@ int main(){
 	} while (correct_letters != 5 && attempts_num < 5);
 	if (attempts_num == 5 && correct_letters != 5)
 		cout << "Perdeu. Palavra certa: " << right_word << "\n";
-	
+	else
+		printf(COLOR_GREEN "PARABÉNS!!" COLOR_RESET);
 
 	return 0;
 }
-/* tocas, notas, bolir, calar */
+
+/* */
