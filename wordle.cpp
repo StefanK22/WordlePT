@@ -27,7 +27,7 @@ ifstream in;
 
 int main(){
 
-	int correct_letters, attempts_num = 0, file_size = count_all_words(), n;
+    int correct_letters = 0, attempts_num = 0, file_size = count_all_words();
 	string right_word = choose_random_word(file_size);
 
 	welcome_message();
